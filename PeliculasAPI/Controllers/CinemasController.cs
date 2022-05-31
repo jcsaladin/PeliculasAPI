@@ -110,7 +110,10 @@ namespace PeliculasAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new OkMessageModel()
+            {
+                data = "success"
+            });
         }
 
         private bool CinemasExists(int id)
