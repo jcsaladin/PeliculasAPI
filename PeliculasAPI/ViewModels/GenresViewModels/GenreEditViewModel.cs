@@ -1,4 +1,4 @@
-﻿namespace PeliculasAPI.ViewModels
+﻿namespace PeliculasAPI.ViewModels.GenresViewModels
 {
     public class GenreEditViewModel
     {

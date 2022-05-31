@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Data;
 using PeliculasAPI.Entities;
-using PeliculasAPI.ViewModels;
+using PeliculasAPI.ViewModels.CinemasViewModels;
 
 namespace PeliculasAPI.Controllers
 {
@@ -23,13 +23,32 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cinema>>> GetCinemas()
+        public async Task<ActionResult<IEnumerable<CinemaReturnViewModel>>> GetCinemas()
         {
-            return await _context.Cinemas.Where(x => x.Archived == false).ToListAsync();
+            var cinemas = await _context.Cinemas.Where(x => x.Archived == false).ToListAsync();
+
+            List<CinemaReturnViewModel> result = new List<CinemaReturnViewModel>();
+
+            foreach (var cinema in cinemas)
+            {
+                var cinemaVM = new CinemaReturnViewModel
+                {
+                   Id = cinema.Id,
+                   Name = cinema.Name,
+                   Address = cinema.Address,
+                   Latitude = cinema.Latitude,
+                   Longitude = cinema.Longitude,
+                   Archived = cinema.Archived,
+                };
+
+                result.Add(cinemaVM);
+            }
+
+            return result;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cinema>> GetCinemas(int id)
+        public async Task<ActionResult<CinemaReturnViewModel>> GetCinemas(int id)
         {
             var cinema = await _context.Cinemas.FindAsync(id);
 
@@ -38,7 +57,17 @@ namespace PeliculasAPI.Controllers
                 return NotFound();
             }
 
-            return cinema;
+            var cinemaVM = new CinemaReturnViewModel
+            {
+                Id = cinema.Id,
+                Name = cinema.Name,
+                Address = cinema.Address,
+                Latitude = cinema.Latitude,
+                Longitude = cinema.Longitude,
+                Archived = cinema.Archived,
+            };
+
+            return cinemaVM;
         }
 
         [HttpPost]
@@ -49,7 +78,8 @@ namespace PeliculasAPI.Controllers
                 Name = cinemasVM.Name,
                 Address = cinemasVM.Address,
                 Latitude = cinemasVM.Latitude,
-                Longitude = cinemasVM.Longitude
+                Longitude = cinemasVM.Longitude,
+                Archived = false
             };
 
             _context.Cinemas.Add(cinema);
@@ -109,6 +139,8 @@ namespace PeliculasAPI.Controllers
             cinema.Archived = true;
 
             await _context.SaveChangesAsync();
+
+            Thread.Sleep(4000);
 
             return Ok(new OkMessageModel()
             {

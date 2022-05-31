@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.Data;
 using PeliculasAPI.Entities;
-using PeliculasAPI.ViewModels;
+using PeliculasAPI.ViewModels.GenresViewModels;
 
 namespace PeliculasAPI.Controllers
 {
@@ -23,22 +23,45 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
+        public async Task<ActionResult<IEnumerable<GenreReturnViewModel>>> GetGenres()
         {
-            return await _context.Genres.Where(x => x.Archived == false).ToListAsync();
+            var genres = await _context.Genres.Where(x => x.Archived == false).ToListAsync();
+
+            List<GenreReturnViewModel> result = new List<GenreReturnViewModel>();
+
+            foreach (var genre in genres)
+            {
+                var genreVM = new GenreReturnViewModel
+                {
+                    Id = genre.Id,
+                    Name = genre.Name,
+                    Archived = genre.Archived
+                };
+
+                result.Add(genreVM);
+            }
+
+            return result;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Genre>> GetGenres(int id)
+        public async Task<ActionResult<GenreReturnViewModel>> GetGenres(int id)
         {
-            var genres = await _context.Genres.FindAsync(id);
+            var genre = await _context.Genres.FindAsync(id);
 
-            if (genres == null)
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return genres;
+            var genreVM = new GenreReturnViewModel
+            {
+                Id = genre.Id,
+                Name = genre.Name,
+                Archived = genre.Archived
+            };
+
+            return genreVM;
         }
 
         [HttpPost]
@@ -47,7 +70,7 @@ namespace PeliculasAPI.Controllers
             var genre = new Genre
             {
                 Name = genresVM.Name,
-                Archived = genresVM.Archived
+                Archived = false
             };
 
             _context.Genres.Add(genre);
@@ -104,6 +127,8 @@ namespace PeliculasAPI.Controllers
             genre.Archived = true;
 
             await _context.SaveChangesAsync();
+
+            Thread.Sleep(4000);
 
             return Ok(new OkMessageModel()
             {
