@@ -1,8 +1,7 @@
-﻿namespace PeliculasAPI.ViewModels
+﻿namespace PeliculasAPI.ViewModels.GenresViewModels
 {
     public class GenreInputViewModel
     {
         public string Name { get; set; }
-        public bool Archived { get; set; }
     }
 }

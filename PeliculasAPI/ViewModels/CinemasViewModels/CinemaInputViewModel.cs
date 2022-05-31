@@ -1,8 +1,7 @@
-﻿namespace PeliculasAPI.ViewModels
+﻿namespace PeliculasAPI.ViewModels.CinemasViewModels
 {
-    public class CinemaEditViewModel
+    public class CinemaInputViewModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public double Latitude { get; set; }
