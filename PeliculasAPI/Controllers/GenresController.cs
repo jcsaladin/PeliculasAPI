@@ -42,7 +42,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GenresInputViewModel>> PostGenres(GenresInputViewModel genresVM)
+        public async Task<ActionResult<GenreInputViewModel>> PostGenres(GenreInputViewModel genresVM)
         {
             var genre = new Genre
             {
@@ -57,7 +57,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGenres(int id, GenresEditViewModel genresVM)
+        public async Task<IActionResult> PutGenres(int id, GenreEditViewModel genresVM)
         {
             if (id != genresVM.Id)
             {
